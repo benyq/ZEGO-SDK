@@ -2,6 +2,8 @@ package com.zegocloud.demo.bestpractice.internal.sdk;
 
 import android.app.Application;
 import android.text.TextUtils;
+
+import com.zegocloud.demo.bestpractice.ZEGOSDKKeyCenter;
 import com.zegocloud.demo.bestpractice.internal.sdk.basic.MergeCallBack;
 import com.zegocloud.demo.bestpractice.internal.sdk.basic.ZEGOSDKCallBack;
 import com.zegocloud.demo.bestpractice.internal.sdk.basic.ZegoTokenExpireListener;
@@ -54,7 +56,7 @@ public class ZEGOSDKManager {
 
     public void initSDKWithToken(Application application, long appID, String token) {
         this.token = token;
-        initSDK(application, appID, "", ZegoScenario.DEFAULT);
+        initSDK(application, appID, ZEGOSDKKeyCenter.appSign, ZegoScenario.DEFAULT);
     }
 
     public void connectUser(String userID, String userName, ZEGOSDKCallBack callback) {
