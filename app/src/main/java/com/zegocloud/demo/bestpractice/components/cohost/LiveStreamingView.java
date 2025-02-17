@@ -9,7 +9,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.faceunity.core.enumeration.FUAIProcessorEnum;
+import com.faceunity.core.enumeration.FUInputTextureEnum;
+import com.faceunity.nama.FURenderer;
+import com.faceunity.nama.data.FaceUnityDataFactory;
+import com.faceunity.nama.listener.FURendererListener;
 import com.zegocloud.demo.bestpractice.databinding.LayoutLiveStreamingBinding;
+import com.zegocloud.demo.bestpractice.internal.FaceunityVideoProcess;
 import com.zegocloud.demo.bestpractice.internal.ZEGOLiveStreamingManager;
 import com.zegocloud.demo.bestpractice.internal.ZEGOLiveStreamingManager.LiveStreamingListener;
 import com.zegocloud.demo.bestpractice.internal.business.RoomRequestExtendedData;
@@ -20,13 +27,18 @@ import com.zegocloud.demo.bestpractice.internal.sdk.express.ExpressService;
 import com.zegocloud.demo.bestpractice.internal.sdk.express.IExpressEngineEventHandler;
 import com.zegocloud.demo.bestpractice.internal.sdk.zim.IZIMEventHandler;
 import com.zegocloud.demo.bestpractice.internal.utils.ZegoUtil;
+
+import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.ZegoMediaPlayer;
 import im.zego.zegoexpress.callback.IZegoMediaPlayerEventHandler;
 import im.zego.zegoexpress.callback.IZegoMediaPlayerLoadResourceCallback;
 import im.zego.zegoexpress.constants.ZegoMediaPlayerState;
+import im.zego.zegoexpress.constants.ZegoPublishChannel;
 import im.zego.zegoexpress.constants.ZegoPublisherState;
+import im.zego.zegoexpress.constants.ZegoVideoBufferType;
 import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
 import im.zego.zegoexpress.entity.ZegoCanvas;
+import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
 import im.zego.zegoexpress.entity.ZegoVideoConfig;
 import im.zego.zim.entity.ZIMUserFullInfo;
 import java.util.ArrayList;
@@ -57,6 +69,7 @@ public class LiveStreamingView extends FrameLayout {
 
     private void initView() {
         binding = LayoutLiveStreamingBinding.inflate(LayoutInflater.from(getContext()), this, true);
+        initFaceUnity();
     }
 
     public void prepareForStartLive(View.OnClickListener onClickListener) {
@@ -64,7 +77,8 @@ public class LiveStreamingView extends FrameLayout {
         //prepare for host view
         binding.previewStart.setVisibility(View.VISIBLE);
         binding.liveAudioroomTopbar.setVisibility(GONE);
-        binding.mainHostVideo.startPreviewOnly();
+//        binding.mainHostVideo.startPreviewOnly();
+        startPreviewOnly();
         binding.previewStart.setOnClickListener(v -> {
             if (onClickListener != null) {
                 onClickListener.onClick(v);
@@ -334,7 +348,8 @@ public class LiveStreamingView extends FrameLayout {
         binding.liveCohostViewParent.setVisibility(View.VISIBLE);
 
         if (ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
-            binding.mainHostVideo.startPreviewOnly();
+//            binding.mainHostVideo.startPreviewOnly();
+            startPreviewOnly();
         } else {
             if (hostUser != null) {
                 String hostMainStreamID = hostUser.getMainStreamID();
@@ -347,5 +362,26 @@ public class LiveStreamingView extends FrameLayout {
         if (hostUser != null) {
             onRoomUserCameraOpen(hostUser.userID, hostUser.isCameraOpen());
         }
+    }
+
+    private void startPreviewOnly() {
+        ZegoCustomVideoProcessConfig config = new ZegoCustomVideoProcessConfig();
+        // 选择 GL_TEXTURE_2D 类型视频帧数据
+        config.bufferType = ZegoVideoBufferType.GL_TEXTURE_2D;
+        // 开启自定义前处理
+        ZEGOSDKManager.getInstance().expressService.enableCustomVideoProcessing(true, config, ZegoPublishChannel.MAIN);
+
+
+        binding.mainHostVideo.startPreviewOnly();
+    }
+
+    private void initFaceUnity() {
+        binding.faceunityView.bindDataFactory(FaceunityVideoProcess.getInstance().getFaceUnityDataFactory());
+        FURenderer.getInstance().setInputTextureType(FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE);
+        ZegoExpressEngine expressEngine = ZEGOSDKManager.getInstance().expressService.getExpressEngine();
+
+        FaceunityVideoProcess.getInstance().setExpressEngine(expressEngine);
+        ZEGOSDKManager.getInstance().expressService.setCustomVideoProcessHandler(FaceunityVideoProcess.getInstance());
+
     }
 }

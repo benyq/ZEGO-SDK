@@ -20,7 +20,6 @@ import com.faceunity.core.utils.CameraUtils;
 import com.faceunity.core.utils.FULogger;
 import com.faceunity.nama.listener.FURendererListener;
 import com.faceunity.nama.utils.FuDeviceUtils;
-import com.faceunity.nama.widget.authpack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,8 +77,8 @@ public class FURenderer extends IFURenderer {
      */
     @Override
     public void setup(Context context) {
-        FURenderManager.setKitDebug(FULogger.LogLevel.ERROR);
-        FURenderManager.setCoreDebug(FULogger.LogLevel.ERROR);
+        FURenderManager.setKitDebug(FULogger.LogLevel.TRACE);
+        FURenderManager.setCoreDebug(FULogger.LogLevel.TRACE);
         FURenderManager.registerFURender(context, authpack.A(), new OperateCallback() {
             @Override
             public void onSuccess(int i, @NotNull String s) {

@@ -46,7 +46,8 @@
     android:id="@+id/preview_start"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="88dp"
+    android:layout_marginBottom="48dp"
+    app:layout_constraintBottom_toTopOf="@id/faceunity_view"
     android:text="Start"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -67,6 +68,12 @@
     android:layout_height="wrap_content"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"></FrameLayout>
+
+  <com.faceunity.nama.ui.FaceUnityView
+    android:id="@+id/faceunity_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toTopOf="@id/live_bottom_menu_bar_parent"/>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/cohost_container"

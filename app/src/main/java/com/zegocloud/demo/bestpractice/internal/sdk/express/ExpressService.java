@@ -30,6 +30,7 @@ import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason;
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamEvent;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
+import im.zego.zegoexpress.constants.ZegoVideoBufferType;
 import im.zego.zegoexpress.constants.ZegoViewMode;
 import im.zego.zegoexpress.entity.ZegoCanvas;
 import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
@@ -346,6 +347,10 @@ public class ExpressService {
 
     public void sendSEI(String seiString) {
         engineProxy.sendSEI(seiString.getBytes());
+    }
+
+    public ZegoExpressEngine getExpressEngine() {
+        return engineProxy.getExpressEngine();
     }
 
     public void startPreview(TextureView textureView, ZegoViewMode viewMode) {
